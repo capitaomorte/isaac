@@ -46,7 +46,6 @@ class Test::Unit::TestCase
   def mock_bot(&b)
     @socket, @server = MockSocket.pipe
     stub(TCPSocket).open(anything, anything) do
-      puts "HEYYYYYYY!"
       @socket
     end
     bot = Isaac::Bot.new(&b)
