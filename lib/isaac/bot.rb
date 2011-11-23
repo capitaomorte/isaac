@@ -3,7 +3,7 @@ require 'eventmachine'
 module Isaac
   VERSION = '0.2.1'
 
-  Config = Struct.new(:server, :port, :password, :nick, :realname, :version, :environment, :verbose, :reload)
+  Config = Struct.new(:server, :port, :ssl, :password, :nick, :realname, :version, :environment, :verbose, :encoding, :reload)
   
 
   class Bot
@@ -12,7 +12,7 @@ module Isaac
 
     def initialize(&b)
       @events = {}
-      @config = Config.new("localhost", 6667, false, nil, "isaac", "Isaac", 'isaac', :production, false, "utf-8")
+      @config = Config.new("localhost", 6667, false, nil, "isaac", "Isaac", 'isaac', :production, false, "utf-8", false)
 
       instance_eval(&b) if block_given?
     end
@@ -94,7 +94,18 @@ module Isaac
       end
     end
 
+    def reloading?
+      @reloading
+    end
+
   private
+    def reload!
+      @reloading = true
+      @events = {}
+      load $0
+      @reloading = false
+    end
+
     def find(type, message)
       if events = @events[type]
         events.detect {|regexp,_| message.match(regexp)}

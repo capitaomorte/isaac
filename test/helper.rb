@@ -6,7 +6,7 @@ require 'contest'
 require 'rr'
 require 'timeout'
 begin
-  require 'ruby-debug'
+  require 'ruby-debug' or require 'ruby-debug19'
 rescue LoadError; end
 
 module Test::Unit::Assertions
@@ -45,7 +45,10 @@ class Test::Unit::TestCase
 
   def mock_bot(&b)
     @socket, @server = MockSocket.pipe
-    stub(TCPSocket).open(anything, anything) {@socket}
+    stub(TCPSocket).open(anything, anything) do
+      puts "HEYYYYYYY!"
+      @socket
+    end
     bot = Isaac::Bot.new(&b)
     bot.config.environment = :test
     Thread.start { bot.start }

@@ -13,7 +13,6 @@ end
 at_exit do
   unless defined?(Test::Unit)
     raise $! if $!
-    Isaac.bot.start unless Isaac.bot.reloading?
-    EventMachine.run {$bot.start}
+    EventMachine.run {$bot.start} unless $bot.reloading?
   end
 end
