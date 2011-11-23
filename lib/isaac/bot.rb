@@ -87,6 +87,9 @@ module Isaac
           msg.nick, msg.user, msg.host, msg.channel, msg.error, msg.message
       end
 
+      # reload! if @config.reload
+      # not working...
+
       if handler = find(event, message)
         regexp, block = *handler
         self.match = message.match(regexp).captures
