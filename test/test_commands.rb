@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require 'helper'
 
 class TestCommands < Test::Unit::TestCase
   test "raw messages can be send" do
@@ -15,6 +15,14 @@ class TestCommands < Test::Unit::TestCase
 
     bot.msg "foo", "bar baz"
     assert_equal "PRIVMSG foo :bar baz\r\n", @server.gets
+  end
+
+  test "actions are sent to recipient" do
+    bot = mock_bot {}
+    bot_is_connected
+
+    bot.action "foo", "bar"
+    assert_equal "PRIVMSG foo :\001ACTION bar\001\r\n", @server.gets
   end
 
   test "channels are joined" do
@@ -41,6 +49,22 @@ class TestCommands < Test::Unit::TestCase
 
     bot.topic "#foo", "bar baz"
     assert_equal "TOPIC #foo :bar baz\r\n", @server.gets
+  end
+
+  test "modes can be set" do
+    bot = mock_bot {}
+    bot_is_connected
+
+    bot.mode "#foo", "+o"
+    assert_equal "MODE #foo +o\r\n", @server.gets
+  end
+
+  test "can kick users" do
+    bot = mock_bot {}
+    bot_is_connected
+
+    bot.kick "foo", "bar", "bein' a baz"
+    assert_equal "KICK foo bar :bein' a baz\r\n", @server.gets
   end
 
   test "quits" do
